@@ -1,8 +1,8 @@
 import { Logger } from "tslog";
-
+//логгер для терминала
 export class LogService {
-  public _logger: Logger;
-
+  _logger: Logger;
+  //параметры логгера
   constructor() {
     this._logger = new Logger({
       displayInstanceName: false,
@@ -11,13 +11,15 @@ export class LogService {
       displayFunctionName: false,
     });
   }
-
+  //обычный текст
   info(...args: unknown[]) {
     this._logger.info(...args);
   }
+  //текст ошибки
   error(...args: unknown[]) {
     this._logger.error(...args);
   }
+  //текст препреждения
   warn(...args: unknown[]) {
     this._logger.warn(...args);
   }

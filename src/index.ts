@@ -1,9 +1,12 @@
-import { App } from "./app";
-import { LogService } from "./log/log.service";
+import { App } from "./app.js";
+import { UsersController } from "./controllers/users/users.controller.js";
+import { LogService } from "./log/log.service.js";
 
 async function start() {
-  const app = new App(new LogService());
+  let logger = new LogService();
+  //создаем новый App и передаем контроллеры
+  const app = new App(logger, new UsersController(logger));
   await app.init();
 }
-
+//запуск приложения
 start();

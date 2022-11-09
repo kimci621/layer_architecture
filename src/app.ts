@@ -1,27 +1,40 @@
+import { UsersController } from "./controllers/users/users.controller.js";
 import express, { Express } from "express";
-import { userRouter } from "./routes/userRouter";
+import { userRouter } from "./routes/userRouter.js";
 import { Server } from "http";
-import { LogService } from "./log/log.service";
+import { LogService } from "./log/log.service.js";
 
 export class App {
-  private _app: Express;
-  private _port: number;
-  private _server: Server;
-  private _logger: LogService;
-
-  constructor(logger: LogService, port?: number) {
-    this._app = express();
-    this._port = port ? port : 8000;
-    this._logger = logger;
+  //свойства
+  app: Express;
+  port: number;
+  server: Server;
+  logger: LogService;
+  UsersController: UsersController;
+  //App принимает при создании логгер, контреллеры и возможно кастомный порт 
+  constructor(
+    logger: LogService,
+    UsersController: UsersController,
+    port?: number
+  ) {
+    //app теперь express 
+    this.app = express();
+    this.port = port ? port : 8000;
+    this.logger = logger;
+    this.UsersController = UsersController;
   }
-
-  private useRoutes() {
-    this._app.use("/users", userRouter);
+  //useRoutes будет слушать url /users, middleware принимает url и функцию с req, res, next
+  //т.е. теперь express будет слушать и отвечать на /users 
+  useRoutes() {
+    this.app.use("/users", this.UsersController.router);
   }
 
   async init() {
+    //запуск отслеживания "/users"
     this.useRoutes();
-    this._server = this._app.listen(this._port);
-    this._logger.info(`Сервер запущен на http:localhost:${this._port}`);
+    //запуск сервера на порту this._port
+    this.server = this.app.listen(this.port);
+    //логируем запуск
+    this.logger.info(`Сервер запущен на http:localhost:${this.port}`);
   }
 }
